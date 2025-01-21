@@ -32,6 +32,11 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://api.xn--80adhmoy.xn--p1ai",
+    "https://api.xn--80adhmoy.xn--p1ai",
+]
+
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Kupidon API',
     'DESCRIPTION': 'API для сервиса Kupidon',
@@ -62,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'kupidon.urls'
