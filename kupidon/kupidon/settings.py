@@ -26,7 +26,11 @@ SECRET_KEY = config('API_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "api.xn--80adhmoy.xn--p1ai",
+    "localhost",
+    "127.0.0.1",
+]
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Kupidon API',
