@@ -10,3 +10,18 @@ services:
       - "5432:5432"
     volumes:
       - ./scripts/:/docker-entrypoint-initdb.d/
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    environment:
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - API_SECRET_KEY=${API_SECRET_KEY}
+    ports:
+      - 80:80
+    restart: always
