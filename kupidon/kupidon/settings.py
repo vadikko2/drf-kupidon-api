@@ -27,26 +27,26 @@ SECRET_KEY = config('API_SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "api.xn--80adhmoy.xn--p1ai",
+    config('API_DOMAIN'),
     "localhost",
     "127.0.0.1",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://api.xn--80adhmoy.xn--p1ai',
-    'http://api.xn--80adhmoy.xn--p1ai',
+    f"https://{config('API_DOMAIN')}",
+    f"http://{config('API_DOMAIN')}",
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://api.xn--80adhmoy.xn--p1ai",
-    "https://api.xn--80adhmoy.xn--p1ai",
+    f"http://{config('API_DOMAIN')}",
+    f"https://{config('API_DOMAIN')}",
 ]
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Kupidon API',
     'DESCRIPTION': 'API для сервиса Kupidon',
     'VERSION': '0.0.1',
-    'SERVE_INCLUDE_SCHEMA': True,
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 # Application definition
@@ -59,10 +59,23 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api',
+    'profiles',
     'drf_spectacular',
     'rangefilter',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
