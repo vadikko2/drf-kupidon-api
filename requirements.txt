@@ -1,0 +1,4 @@
+psycopg
+djangorestframework
+drf-spectacular
+django-admin-rangefilter
