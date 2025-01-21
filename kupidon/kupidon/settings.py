@@ -32,6 +32,11 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://api.xn--80adhmoy.xn--p1ai',
+    'http://api.xn--80adhmoy.xn--p1ai',
+]
+
 CORS_ALLOWED_ORIGINS = [
     "http://api.xn--80adhmoy.xn--p1ai",
     "https://api.xn--80adhmoy.xn--p1ai",
