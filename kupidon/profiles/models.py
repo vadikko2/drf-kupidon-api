@@ -1,4 +1,5 @@
 from django.contrib.auth import models as auth_models
+from django.contrib.gis.db import models as geo_models
 from django.db import models
 
 
@@ -22,6 +23,14 @@ class Profile(models.Model):
         blank=False,
     )
     age = models.IntegerField(null=True)
+    last_location = geo_models.PointField(
+        geography=True,
+        spatial_index=True,
+        default=None,
+        null=True,
+        blank=True,
+        srid=4326,
+    )
 
     class Meta:
         db_table = 'profiles'

@@ -17,7 +17,7 @@ Including another URLconf
 from django.urls import path
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
-from profiles.views import brief_profile
+from profiles.views import brief_profile, images
 from .admins import admin
 
 urlpatterns = [
@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     # Profiles
-    path('api/v1/profiles/', brief_profile.BriefProfileView.as_view(), name='profiles'),
-
+    path('api/v1/profile/', brief_profile.BriefProfileView.as_view(), name='profile'),
+    # Images
+    path('api/v1/images/', images.ProfileImagesView.as_view(), name='images'),
 ]
