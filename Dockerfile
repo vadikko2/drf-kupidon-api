@@ -3,7 +3,7 @@ LABEL maintainer="Vadim Kozyrevskiy" \
       email="vadikko2@mail.ru"
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y build-essential libpq-dev && \
+    apt-get install --no-install-recommends -y build-essential libpq-dev libgdal-dev gdal-bin && \
     pip install --no-cache-dir --upgrade pip==24.* && \
     rm -rf /var/lib/apt/lists/*
 
