@@ -6,6 +6,7 @@ class BriefProfileSerializer(serializers.Serializer):
     first_name = serializers.CharField(source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
     age = serializers.IntegerField(read_only=True)
+    profile_image = serializers.URLField(read_only=True)
     distance_km = serializers.IntegerField(read_only=True, default=None, allow_null=True)
     compatibility = serializers.FloatField(read_only=True, min_value=0, max_value=100, allow_null=False)
 

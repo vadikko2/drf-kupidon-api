@@ -31,6 +31,7 @@ class Profile(models.Model):
         blank=True,
         srid=4326,
     )
+    profile_image = models.URLField(null=True, blank=True, default=None)
 
     class Meta:
         db_table = 'profiles'
