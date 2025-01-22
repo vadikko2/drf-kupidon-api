@@ -25,7 +25,12 @@ class BriefProfileView(views.APIView):
         if not login:
             return Response({"detail": "Login parameter is required."}, status=400)
 
-        profile = models.Profile.objects.filter(user__username=login).first()
+        profile = models.Profile.objects.filter(
+            user__username=login,
+            user__is_active=True,
+            user__is_staff=False,
+            user__is_superuser=False,
+        ).first()
 
         if not profile:
             return Response({"detail": "Profile not found."}, status=404)

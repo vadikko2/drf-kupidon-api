@@ -22,7 +22,7 @@ class Profile(models.Model):
         null=False,
         blank=False,
     )
-    age = models.IntegerField(null=True)
+    birthdate = models.DateField(null=True, default=None, blank=True)
     last_location = geo_models.PointField(
         geography=True,
         spatial_index=True,
@@ -32,6 +32,8 @@ class Profile(models.Model):
         srid=4326,
     )
     profile_image = models.URLField(null=True, blank=True, default=None)
+    security_level = models.FloatField(null=True, blank=True, default=None)
+    description = models.CharField(max_length=100, default='', blank=True)
 
     class Meta:
         db_table = 'profiles'
