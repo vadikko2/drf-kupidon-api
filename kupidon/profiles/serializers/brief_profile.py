@@ -4,18 +4,20 @@ from rest_framework import serializers
 
 
 class BriefProfileSerializer(serializers.Serializer):
-    username = serializers.CharField(source='user.username', read_only=True)
-    first_name = serializers.CharField(source='user.first_name', read_only=True, max_length=12)
-    last_name = serializers.CharField(source='user.last_name', read_only=True, allow_null=True, default=None)
-    age = serializers.IntegerField(read_only=True)
-    profile_image = serializers.URLField(read_only=True)
-    security_level = serializers.FloatField(read_only=True, min_value=0, max_value=100)
-    description = serializers.CharField(read_only=True, allow_null=True, default=None, max_length=100)
-    last_login = serializers.DateTimeField(source='user.last_login', read_only=True, allow_null=True, default=None)
-    online = serializers.BooleanField(read_only=True, default=False)
+    username = serializers.CharField(source='user.username')
+    first_name = serializers.CharField(source='user.first_name', max_length=12)
+    last_name = serializers.CharField(source='user.last_name', allow_null=True, default=None)
+    last_login = serializers.DateTimeField(source='user.last_login', allow_null=True, default=None)
 
-    distance_km = serializers.FloatField(read_only=True, default=None, allow_null=True)
-    compatibility = serializers.FloatField(read_only=True, min_value=0, max_value=100, allow_null=False)
+    age = serializers.IntegerField()
+    profile_image = serializers.URLField()
+    security_level = serializers.FloatField(min_value=0, max_value=100)
+    description = serializers.CharField(allow_null=True, default=None, max_length=100)
+
+    online = serializers.BooleanField(default=False)
+
+    distance_km = serializers.FloatField(default=None, allow_null=True)
+    compatibility = serializers.FloatField(min_value=0, max_value=100, allow_null=False)
 
     def get_age(self, obj):
         """Вычисляет возраст на основе даты рождения."""

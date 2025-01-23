@@ -22,7 +22,8 @@ class ProfileImagesView(views.APIView):
         if not username:
             return Response({"detail": "Username parameter is required."}, status=400)
 
-        images_queryset = models.Image.objects.filter(user__username=username).order_by('profile_order')
+        images_queryset = models.Image.objects.filter(user__username=username).order_by('profile_order', '-id')
+
         images_data = [
             {
                 'order': image.profile_order,
@@ -31,7 +32,10 @@ class ProfileImagesView(views.APIView):
             for image in images_queryset
         ]
 
-        serializer = self.serializer_class(data={'username': username, 'images': images_data})
+        serializer = self.serializer_class(data={
+            'username': username,
+            'images': images_data,
+        })
 
         if serializer.is_valid():
             return Response(serializer.data)
