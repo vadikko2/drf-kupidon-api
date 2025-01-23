@@ -19,14 +19,14 @@ class BriefProfileView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        login = request.GET.get('username')
+        username = request.GET.get('username')
         current_user = request.user.username
 
-        if not login:
+        if not username:
             return Response({"detail": "Login parameter is required."}, status=400)
 
         profile = models.Profile.objects.filter(
-            user__username=login,
+            user__username=username,
             user__is_active=True,
             user__is_staff=False,
             user__is_superuser=False,

@@ -3,6 +3,7 @@ from rest_framework import authentication, permissions, views
 from rest_framework.response import Response
 
 from profiles import models
+from django.contrib.auth import models as auth_models
 from profiles.serializers import images
 
 
@@ -21,6 +22,16 @@ class ProfileImagesView(views.APIView):
         username = request.GET.get('username')
         if not username:
             return Response({"detail": "Username parameter is required."}, status=400)
+
+        user = auth_models.User.objects.filter(
+            username=username,
+            is_active=True,
+            is_staff=False,
+            is_superuser=False,
+        ).first()
+
+        if not user:
+            return Response({"detail": "User not found."}, status=404)
 
         images_queryset = models.Image.objects.filter(user__username=username).order_by('profile_order', '-id')
 
