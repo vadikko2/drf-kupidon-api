@@ -18,10 +18,15 @@ from django.urls import path
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 from profiles.views import brief_profile, images
+from healthcheck import views as healthcheck_views
 from .admins import admin
 
 urlpatterns = [
+    # Admin
     path('admin/', admin.site.urls),
+    # Healthcheck
+    path('', healthcheck_views.HealthCheckView.as_view(), name='healthcheck'),
+    # Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),

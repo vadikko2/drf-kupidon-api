@@ -1,17 +1,16 @@
-from django.contrib.gis.geos import Point
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework import authentication, permissions, views
-from rest_framework.response import Response
+from django.contrib.gis import geos
+from drf_spectacular import utils
+from rest_framework import authentication, permissions, response, status, views
 
 from profiles import models
 from profiles.serializers import brief_profile
 
 
-@extend_schema(
+@utils.extend_schema(
     parameters=[
-        OpenApiParameter("username", type=str, description="Логин пользователя", required=True),
+        utils.OpenApiParameter("username", type=str, description="Логин пользователя", required=True),
     ],
-    responses={200: brief_profile.BriefProfileSerializer},
+    responses={status.HTTP_200_OK: brief_profile.BriefProfileSerializer},
 )
 class BriefProfileView(views.APIView):
     serializer_class = brief_profile.BriefProfileSerializer
@@ -23,7 +22,10 @@ class BriefProfileView(views.APIView):
         current_user = request.user.username
 
         if not username:
-            return Response({"detail": "Login parameter is required."}, status=400)
+            return response.Response(
+                {"detail": "Username parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         profile = models.Profile.objects.filter(
             user__username=username,
@@ -33,18 +35,18 @@ class BriefProfileView(views.APIView):
         ).first()
 
         if not profile:
-            return Response({"detail": "Profile not found."}, status=404)
+            return response.Response({"detail": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
         current_user_profile = models.Profile.objects.filter(user__username=current_user).first()
 
         distance_in_km = None
         if current_user_profile and current_user_profile.last_location and profile.last_location:
-            user_location = Point(
+            user_location = geos.Point(
                 current_user_profile.last_location.y,
                 current_user_profile.last_location.x,
                 srid=4326,
             )
-            target_location = Point(
+            target_location = geos.Point(
                 profile.last_location.y,
                 profile.last_location.x,
                 srid=4326,
@@ -52,4 +54,4 @@ class BriefProfileView(views.APIView):
             distance_in_km = user_location.distance(target_location) * 100
 
         serializer = self.serializer_class(profile, context={'distance_km': distance_in_km})
-        return Response(serializer.data)
+        return response.Response(serializer.data)

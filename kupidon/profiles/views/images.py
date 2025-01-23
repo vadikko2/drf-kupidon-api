@@ -1,17 +1,16 @@
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework import authentication, permissions, views
-from rest_framework.response import Response
+from django.contrib.auth import models as auth_models
+from drf_spectacular import utils
+from rest_framework import authentication, permissions, response, status, views
 
 from profiles import models
-from django.contrib.auth import models as auth_models
 from profiles.serializers import images
 
 
-@extend_schema(
+@utils.extend_schema(
     parameters=[
-        OpenApiParameter("username", type=str, description="Логин пользователя", required=True),
+        utils.OpenApiParameter("username", type=str, description="Логин пользователя", required=True),
     ],
-    responses={200: images.ProfileImagesSerializer},
+    responses={status.HTTP_200_OK: images.ProfileImagesSerializer},
 )
 class ProfileImagesView(views.APIView):
     serializer_class = images.ProfileImagesSerializer
@@ -21,7 +20,10 @@ class ProfileImagesView(views.APIView):
     def get(self, request, *args, **kwargs):
         username = request.GET.get('username')
         if not username:
-            return Response({"detail": "Username parameter is required."}, status=400)
+            return response.Response(
+                {"detail": "Username parameter is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         user = auth_models.User.objects.filter(
             username=username,
@@ -31,7 +33,7 @@ class ProfileImagesView(views.APIView):
         ).first()
 
         if not user:
-            return Response({"detail": "User not found."}, status=404)
+            return response.Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
         images_queryset = models.Image.objects.filter(user__username=username).order_by('profile_order', '-id')
 
@@ -49,6 +51,6 @@ class ProfileImagesView(views.APIView):
         })
 
         if serializer.is_valid():
-            return Response(serializer.data)
+            return response.Response(serializer.data)
         else:
-            return Response(serializer.errors, status=400)
+            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
