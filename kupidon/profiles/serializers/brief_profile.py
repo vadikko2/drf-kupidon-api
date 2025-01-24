@@ -9,7 +9,7 @@ class BriefProfileSerializer(serializers.Serializer):
     last_name = serializers.CharField(source='user.last_name', allow_null=True, default=None)
     last_login = serializers.DateTimeField(source='user.last_login', allow_null=True, default=None)
 
-    age = serializers.IntegerField()
+    age = serializers.IntegerField(allow_null=True, default=None)
     profile_image = serializers.URLField()
     security_level = serializers.FloatField(min_value=0, max_value=100)
     description = serializers.CharField(allow_null=True, default=None, max_length=100)
@@ -17,7 +17,7 @@ class BriefProfileSerializer(serializers.Serializer):
     online = serializers.BooleanField(default=False)
 
     distance_km = serializers.FloatField(default=None, allow_null=True)
-    compatibility = serializers.FloatField(min_value=0, max_value=100, allow_null=False)
+    compatibility = serializers.FloatField(min_value=0, max_value=100, allow_null=True, default=None)
 
     def get_age(self, obj):
         """Вычисляет возраст на основе даты рождения."""

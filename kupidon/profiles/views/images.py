@@ -1,6 +1,6 @@
 from django.contrib.auth import models as auth_models
 from drf_spectacular import utils
-from rest_framework import authentication, permissions, response, status, views
+from rest_framework import authentication, generics, permissions, response, status
 
 from profiles import models
 from profiles.serializers import images
@@ -12,7 +12,7 @@ from profiles.serializers import images
     ],
     responses={status.HTTP_200_OK: images.ProfileImagesSerializer},
 )
-class ProfileImagesView(views.APIView):
+class ProfileImagesView(generics.GenericAPIView):
     serializer_class = images.ProfileImagesSerializer
     authentication_classes = [authentication.SessionAuthentication, authentication.BasicAuthentication]
     permission_classes = [permissions.IsAuthenticated]
