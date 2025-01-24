@@ -14,8 +14,9 @@ Message: typing.TypeAlias = str
 
 
 class HealthCheckView(views.APIView):
-    def get(self, request):
+    permission_classes = []
 
+    def get(self, request):
         checks_mapping = {
             "database": self.check_database,
             # остальные проверки

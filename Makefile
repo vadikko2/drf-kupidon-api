@@ -11,5 +11,4 @@ build:
 run:
 	@echo "Running server"
 	@bash -c "export $(grep -v '^#' .env | xargs)"
-	@bash -c "docker compose -f docker-compose-dev.yaml up --build -d"
-
+	@bash -c "docker compose -f docker-compose-dev.yaml up --build -d api"

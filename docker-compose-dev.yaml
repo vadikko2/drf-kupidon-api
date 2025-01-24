@@ -14,6 +14,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        API_ENV: ${API_ENV}
+        API_SECRET_KEY: ${API_SECRET_KEY}
+        API_DOMAIN: ${API_DOMAIN}
+        DATABASE_NAME: ${DATABASE_NAME}
+        DATABASE_USER: ${DATABASE_USER}
+        DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+        DATABASE_HOST: ${DATABASE_HOST}
+        DATABASE_PORT: ${DATABASE_PORT}
     container_name: api
     environment:
       - DATABASE_NAME=${DATABASE_NAME}
@@ -22,6 +31,8 @@ services:
       - DATABASE_HOST=${DATABASE_HOST}
       - DATABASE_PORT=${DATABASE_PORT}
       - API_SECRET_KEY=${API_SECRET_KEY}
+      - API_ENV=${API_ENV}
+      - API_DOMAIN=${API_DOMAIN}
     ports:
       - 80:80
     restart: always
