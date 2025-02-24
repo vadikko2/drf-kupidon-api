@@ -36,7 +36,7 @@ class HealthCheckView(generics.GenericAPIView):
         }
 
         serializer = self.get_serializer(data=response_data)
-        serializer.is_valid(raise_exception=True)  # Проверка структуры ответа
+        serializer.is_valid(raise_exception=True)
         return response.Response(
             serializer.data,
             status=status.HTTP_200_OK if

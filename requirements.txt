@@ -1,11 +1,22 @@
+# Database
 psycopg==3.2.4
 psycopg2-binary==2.9.10
+# Utils
 djangorestframework==3.15.2
 drf-spectacular==0.28.0
 django-admin-rangefilter==0.13.2
-django-cors-headers==4.6.0
+# Configs
 python-decouple==3.8
+# Maps
 django-map-widgets
 geojson
+drf_extra_fields==3.7.0
+# Deployment
+django-cors-headers==4.6.0
 gunicorn==23.0.0
 whitenoise==6.8.2
+# S3
+boto3==1.36.6
+django-storages==1.14.4
+# Images
+Pillow==11.1.0

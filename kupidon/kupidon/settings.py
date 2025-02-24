@@ -9,10 +9,10 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import sys
 from pathlib import Path
 
-from decouple import config
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,20 +26,29 @@ SECRET_KEY = config('API_SECRET_KEY', default='api-secret-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('API_ENV', default='dev') != 'prod'
 
-ALLOWED_HOSTS = [
-    config('API_DOMAIN'),
-    "localhost",
-    "127.0.0.1",
-]
+CORS_ALLOW_ALL_ORIGINS = False
 
-CSRF_TRUSTED_ORIGINS = [
-    f"https://{config('API_DOMAIN')}",
-    f"http://{config('API_DOMAIN')}",
-]
+# Hosts
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
-CORS_ALLOWED_ORIGINS = [
-    f"http://{config('API_DOMAIN')}",
-    f"https://{config('API_DOMAIN')}",
+# CORS Settings
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='http://localhost:8080,http://127.0.0.1:8080',
+    cast=Csv()
+)
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]
 
 SPECTACULAR_SETTINGS = {
@@ -59,11 +68,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'storages',
     'profiles',
+    'images',
     'healthcheck',
     'drf_spectacular',
     'rangefilter',
     'django.contrib.gis',
+    'drf_extra_fields',
 ]
 
 REST_FRAMEWORK = {
@@ -80,6 +92,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -88,9 +101,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
-
 
 ROOT_URLCONF = 'kupidon.urls'
 
@@ -166,3 +177,63 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# S3 Configuration
+
+AWS_STORAGE_BUCKET_NAME = config('S3_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = config('S3_ENDPOINT_URL')
+AWS_ACCESS_KEY_ID = config('S3_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('S3_SECRET_ACCESS_KEY')
+AWS_QUERYSTRING_AUTH = False  # Отключает токены в URL для публичных файлов
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/media/"
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] [{levelname}] {module}: {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname}: {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',  # Минимальный уровень логов (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,  # Логирование в stdout
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',  # Уровень логов по умолчанию
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'ERROR',  # Чтобы не засорять логи SQL-запросами
+            'propagate': False,
+        },
+        'myapp': {  # Можно добавить логгер для конкретного приложения
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
